@@ -2,6 +2,8 @@ const Category = require("../models/category.model");
 const Product = require('../models/product.model')
 
 module.exports = {
+
+    // Get all categories along with total count
     getCategories: async (req, res) => {
         try {
             const result = await Category.aggregate([
@@ -12,18 +14,20 @@ module.exports = {
                     }
                 }
             ]);
-            const count = result[0].count[0].totalCategories;
-            const categories = result[0].categories
+            const count = result[0]?.count[0]?.totalCategories || 0;
+            const categories = result[0]?.categories || [];
             const data = {
                 totalCategories: count,
                 categories
             }
             return res.status(200).json(data);
         } catch (error) {
-            console.error(error.message);
-            return res.status(500).json({ message: 'Internal Server Error' });
+            console.error(`Error fetching categories:, ${error.message}`);
+            return res.status(500).json({ message: 'Error fetching categories' });
         }
     },
+
+    // Get products for a specific category
     getCategoryProducts: async (req, res) => {
         try {
             const { categoryId } = req.query;
@@ -49,11 +53,13 @@ module.exports = {
             ]);
             return res.status(200).json(data);
         } catch (error) {
-            console.error(error.message);
-            return res.status(500).json({ message: 'Internal Server Error' });
+            console.error(`Error fetching category products:,${error.message}`);
+            return res.status(500).json({ message: 'Error fetching category products' });
         }
 
     },
+
+    // Add a new product
     addProduct: async (req, res) => {
         try {
             const product = req.body;
@@ -61,7 +67,7 @@ module.exports = {
             await newProduct.save()
             res.status(201).json({ message: 'Product saved successfully' });
         } catch (error) {
-            console.error('Error saving product:', error);
+            console.error(`Error saving product:, ${error.message}`);
             res.status(500).json({ message: 'Error saving product' });
         }
     }
