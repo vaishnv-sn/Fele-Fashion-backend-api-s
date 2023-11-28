@@ -1,4 +1,5 @@
 const express = require('express');
+const apiKeyCheck = require('./middlewares/apiKeyCheck')
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -8,9 +9,10 @@ require('./config/db');
 
 //Middlewares
 app.use(express.json());
+app.use(apiKeyCheck);
 
 //Exporting Routes
-const productRoutes = require('./routes/product.route');
+const productRoutes = require('./routes/productRoute');
 
 //Routes
 app.use('/api/product/', productRoutes);
