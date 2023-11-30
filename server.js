@@ -1,5 +1,6 @@
 const express = require('express');
-const apiKeyCheck = require('./middlewares/apiKeyCheck')
+const morgan = require('morgan');
+const apiKeyCheck = require('./middlewares/apiKeyCheck');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -9,6 +10,7 @@ require('./config/db');
 
 //Middlewares
 app.use(express.json());
+app.use(morgan('combined'));
 app.use(apiKeyCheck);
 
 //Exporting Routes
